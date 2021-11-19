@@ -8,13 +8,17 @@ near_sdk::setup_alloc!();
 #[near_bindgen]
 #[derive(BorshDeserialize, BorshSerialize)]
 pub struct HelloWorld {
-    hello_message: LookupMap<String, String>,
+    //optional
+    user_store: LookupMap<String, String>,
 }
 
+//optional, not needed for challenge
+// this is to show you how to setup a lookup map to store the last
+// string an user entered.
 impl Default for HelloWorld {
     fn default() -> Self {
         Self {
-            hello_message: LookupMap::new(b"a".to_vec()),
+            user_store: LookupMap::new(b"a".to_vec()),
         }
     }
 }
@@ -22,16 +26,13 @@ impl Default for HelloWorld {
 #[near_bindgen]
 impl HelloWorld {
     pub fn set_name(&mut self, name: String) {
-        self.hello_message
-            .insert(&name, &format!("{} {}{}", "Hello", name, "!"));
-        let print_message = format!("Hello {}", name);
-        env::log(print_message.as_bytes())
-    }
+        //optional if you wanted to learn a little about collections
+        // this is a key store example using a lookup map
+        let account_name = env::signer_account_id();
+        self.user_store.insert(&account_name, &name);
 
-    pub fn get_message(&self, name: String) -> String {
-        match self.hello_message.get(&name) {
-            Some(message) => message,
-            None => "No message found".to_string(),
-        }
+        //For the challenge this is all you need
+        let print_message = format!("Hello {}!", name);
+        env::log(print_message.as_bytes())
     }
 }

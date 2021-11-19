@@ -1,0 +1,6 @@
+{
+    "scripts": {
+        "build": " cargo build --target wasm32-unknown-unknown --release",
+        "deploy":"cd target/wasm32-unknown-unknown/release && near deploy --accountId nearvember.testnet --wasmFile nearRustHelloWorld.wasm"
+      }
+}
